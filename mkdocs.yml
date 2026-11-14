@@ -1,0 +1,58 @@
+site_name: Leonardo — Platform 2026.2
+site_description: Documentação individual de Leonardo na disciplina Plataformas, Microsserviços, DevOps e APIs (Insper, 2026.2)
+site_author: Leonardo de Souza Lima e Silva
+site_url: https://souzxxx.github.io/platform-docs/
+repo_url: https://github.com/souzxxx/platform-docs
+repo_name: souzxxx/platform-docs
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: grey
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Modo escuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: grey
+      toggle:
+        icon: material/toggle-switch
+        name: Modo claro
+  features:
+    - content.code.copy
+    - navigation.instant
+    - navigation.top
+    - navigation.sections
+    - navigation.indexes
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search
+
+nav:
+  - Início: index.md
+  - Projeto: projeto.md
+  - Meus bottlenecks: bottlenecks.md
+  - Hands-on: hands-on.md
+  - Uso de IA: uso-de-ia.md
