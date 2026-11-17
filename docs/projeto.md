@@ -73,7 +73,10 @@ flowchart LR
 - **Compatível com quem ainda não tinha OIDC:** o reutilizável herda as permissões de quem chama; sem
   `id-token: write`, o pipeline continua verde e publica só no GHCR.
 - O deploy no EKS liga sozinho quando a variável `EKS_CLUSTER` existe na organização (o cluster é
-  apagado fora dos testes para economizar).
+  apagado fora dos testes para economizar). **Comprovado em 16/11:** com o cluster no ar, o mesmo
+  pipeline publicou e fez o deploy de account, auth e notification sem nenhum comando manual
+  (`kubectl apply` + `rollout status` verdes,
+  [runs](https://pna26.github.io/platform/devops/ci-cd/#evidencia){target="_blank"}).
 
 O workflow `integration` do `platform` sobe a plataforma inteira com o compose em todo push e PR,
 roda o smoke test (que exige pelo menos duas réplicas do gateway respondendo) e o OWASP ZAP.
@@ -94,5 +97,6 @@ Criei a organização do trabalho e o repositório raiz como no hands-on 0:
 | Item | Situação |
 |---|---|
 | Gateway, CI/CD e os 3 bottlenecks | prontos e verificados no compose e no CI |
-| Manifestos k8s | rodaram num cluster kind igual ao EKS (ensaio do teste com HPA, 12/11) |
-| Deploy pelo CI no EKS | a fazer no dia em que o cluster sobe para os testes |
+| Manifestos k8s | rodaram num cluster kind igual ao EKS (ensaio do teste com HPA, 12/11) e no EKS (16/11) |
+| Deploy pelo CI no EKS | comprovado em 16/11 com account, auth e notification; o gateway e o exchange entram na próxima subida do cluster |
+| Workflow `infra` no EKS | falhou em 16/11 porque o `lb` não subia sem o gateway; corrigido (`resolve` no Nginx), falta rodar de novo no cluster |

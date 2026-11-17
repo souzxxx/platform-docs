@@ -22,6 +22,11 @@ réplicas do gateway (round robin). Além do hands-on 7:
 - no Kubernetes, `keepalive_time 10s`: o Service balanceia **conexões**, não requisições, e sem esse
   limite as réplicas criadas pelo HPA levavam ≈ 1,5 min para receber carga (≈ 35–40 s com ele, no
   ensaio do teste com HPA);
+- no Kubernetes, o gateway também é resolvido em tempo de execução (`resolver` do kube-dns +
+  `resolve`): no EKS o `lb` sobe antes do gateway e, sem isso, o Nginx caía com *host not found*
+  e travou o workflow `infra` em 16/11. Agora ele fica pronto, responde `502` até o gateway existir
+  e começa a encaminhar sozinho
+  ([evidência](https://pna26.github.io/platform/devops/ci-cd/#evidencia){target="_blank"});
 - `/gateway/actuator/**` bloqueado para fora: as métricas ficam só na rede interna.
 
 **Evidência:** com 3 réplicas, 15 requisições pelo `lb` se dividem igualmente, e a terceira réplica
