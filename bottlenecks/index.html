@@ -1,0 +1,804 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentação individual de Leonardo na disciplina Plataformas, Microsserviços, DevOps e APIs (Insper, 2026.2)">
+      
+      
+        <meta name="author" content="Leonardo de Souza Lima e Silva">
+      
+      
+        <link rel="canonical" href="https://souzxxx.github.io/platform-docs/bottlenecks/">
+      
+      
+        <link rel="prev" href="../projeto/">
+      
+      
+        <link rel="next" href="../hands-on/">
+      
+      
+        
+          <link rel="alternate" href="/platform-docs/" hreflang="en">
+        
+          <link rel="alternate" href="/platform-docs/pt/" hreflang="pt">
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>My bottlenecks - Leonardo — Platform 2026.2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#my-bottlenecks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Leonardo — Platform 2026.2" class="md-header__button md-logo" aria-label="Leonardo — Platform 2026.2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Leonardo — Platform 2026.2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              My bottlenecks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="grey" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/platform-docs/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/platform-docs/pt/" hreflang="pt" class="md-select__link">
+              Português
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/souzxxx/platform-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    souzxxx/platform-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Leonardo — Platform 2026.2" class="md-nav__button md-logo" aria-label="Leonardo — Platform 2026.2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Leonardo — Platform 2026.2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/souzxxx/platform-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    souzxxx/platform-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../projeto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    My bottlenecks
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    My bottlenecks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#balanceamento-de-carga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Load balancing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cache-do-token-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token cache (Redis)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#varredura-de-vulnerabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vulnerability scanning
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hands-on/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hands-on
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../uso-de-ia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use of AI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#balanceamento-de-carga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Load balancing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cache-do-token-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token cache (Redis)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#varredura-de-vulnerabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vulnerability scanning
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="my-bottlenecks">My bottlenecks</h1>
+<p>I implemented three of the project's bottlenecks. Each one has a full page (problem, solution,
+code, evidence) in the group documentation; here is the summary with the number that shows the effect.</p>
+<table>
+<thead>
+<tr>
+<th>Bottleneck</th>
+<th>Number that shows the effect</th>
+<th>Full page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Load balancing</td>
+<td>15 requests split 5/5/5 across 3 replicas, with the 3rd joining without restarting Nginx</td>
+<td><a href="https://pna26.github.io/platform/bottlenecks/load-balancing/" target="_blank">Load balancing</a></td>
+</tr>
+<tr>
+<td>Token cache (Redis)</td>
+<td>3,001 authenticated requests → <strong>1</strong> call to Auth</td>
+<td><a href="https://pna26.github.io/platform/bottlenecks/cache/" target="_blank">Cache</a></td>
+</tr>
+<tr>
+<td>Vulnerability scanning</td>
+<td>final image with <strong>0</strong> HIGH/CRITICAL; the pipeline fails on a fixable CRITICAL CVE</td>
+<td><a href="https://pna26.github.io/platform/bottlenecks/vulnerability-scanning/" target="_blank">Scanning</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="balanceamento-de-carga">Load balancing</h2>
+<p><strong>Problem:</strong> with a single gateway, the whole platform depends on one process: if it goes down,
+nothing responds; if it saturates, there is no way to scale.</p>
+<p><strong>Solution:</strong> an <strong>Nginx</strong> (<code>lb</code>) is the only exposed service and distributes requests across several
+gateway replicas (round robin). Beyond hands-on 7:</p>
+<ul>
+<li><code>server gateway:8080 resolve</code> with Docker's DNS re-resolved every 10 s: <code>docker compose up
+  --scale gateway=N</code> adds new replicas to the load balancer <strong>without</strong> <code>nginx -s reload</code>;</li>
+<li>on Kubernetes, <code>keepalive_time 10s</code>: the Service balances <strong>connections</strong>, not requests, and without
+  this limit the replicas created by the HPA took ≈ 1.5 min to receive load (≈ 35–40 s with it, in
+  the dry run of the HPA test);</li>
+<li>on Kubernetes, the gateway is also resolved at runtime (kube-dns <code>resolver</code> +
+  <code>resolve</code>): on EKS the <code>lb</code> starts before the gateway and, without this, Nginx crashed with <em>host not found</em>
+  and blocked the <code>infra</code> workflow on 16/11. Now it becomes ready, responds <code>502</code> until the gateway exists
+  and starts forwarding on its own
+  (<a href="https://pna26.github.io/platform/devops/ci-cd/#evidencia" target="_blank">evidence</a>);</li>
+<li><code>/gateway/actuator/**</code> blocked from the outside: metrics stay on the internal network only.</li>
+</ul>
+<p><strong>Evidence:</strong> with 3 replicas, 15 requests through the <code>lb</code> are split evenly, and the third replica
+joined while compose was already running:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--scale<span class="w"> </span><span class="nv">gateway</span><span class="o">=</span><span class="m">3</span><span class="w"> </span>--no-recreate
+$<span class="w"> </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>seq<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">15</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>curl<span class="w"> </span>-s<span class="w"> </span>localhost:8080/health-check<span class="p">;</span><span class="w"> </span>echo<span class="p">;</span><span class="w"> </span><span class="k">done</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>uniq<span class="w"> </span>-c
+<span class="w">   </span><span class="m">5</span><span class="w"> </span><span class="o">{</span><span class="s2">"hostname"</span>:<span class="s2">"112e1c20be21"</span><span class="o">}</span>
+<span class="w">   </span><span class="m">5</span><span class="w"> </span><span class="o">{</span><span class="s2">"hostname"</span>:<span class="s2">"5f9dceeefb1f"</span><span class="o">}</span>
+<span class="w">   </span><span class="m">5</span><span class="w"> </span><span class="o">{</span><span class="s2">"hostname"</span>:<span class="s2">"c98aacd33a1e"</span><span class="o">}</span>
+</code></pre></div>
+<p>The same test runs in CI (<code>scripts/smoke-test.sh</code>) and fails if fewer than two replicas respond.</p>
+<p><strong>On EKS:</strong> on 20/11, 8 calls to <code>/health-check</code> through the ELB were answered by <strong>2 gateway
+replicas</strong> (video demo). In the HPA test of 19/11 the gateway went from 2 to 6 replicas with no failed
+HTTP request (<a href="https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks" target="_blank">result</a>).</p>
+<div class="admonition warning">
+<p class="admonition-title">To improve: graceful shutdown</p>
+<p>When scaling down from 6 to 2 replicas, 2 old gateway pods ended in <code>Error</code> (<code>0/1</code>): exit code 143
+(SIGTERM) from the JVM. No request was lost because the scale-down came after the load, but the
+gateway has no graceful shutdown. Next step: <code>server.shutdown: graceful</code>, a <code>preStop</code> with <code>sleep 5</code>
+so the pod leaves the Service before SIGTERM, and repeating the scale-down with k6 running.</p>
+</div>
+<h2 id="cache-do-token-redis">Token cache (Redis)</h2>
+<p><strong>Problem:</strong> every authenticated request made the gateway call Auth to validate the token. With
+several gateway replicas, a local cache would not be shared.</p>
+<p><strong>Solution:</strong> the gateway stores the result of <code>POST /auth/solve</code> (the account id) in <strong>Redis</strong>:</p>
+<ul>
+<li>the key is the <strong>SHA-256 of the token</strong>, never the token itself;</li>
+<li>the TTL never exceeds the JWT's <code>exp</code>: an expired token does not stay valid through the cache;</li>
+<li>if Redis goes down, the gateway keeps validating against Auth (it only logs the error), without taking anything down.</li>
+</ul>
+<p><strong>Result</strong> (<code>ab -n 3000 -c 20</code> on a protected route, 2 gateway replicas):</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authenticated requests</td>
+<td>3,001</td>
+</tr>
+<tr>
+<td>Served by Redis (<code>hit</code>)</td>
+<td><strong>3,000</strong></td>
+</tr>
+<tr>
+<td>Calls to Auth (<code>miss</code>)</td>
+<td><strong>1</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Auth was taken out of the path of 99.97 % of the requests. With Redis stopped, the gateway kept
+responding <code>200</code> with a valid token and <code>401</code> without a token.</p>
+<h2 id="varredura-de-vulnerabilidades">Vulnerability scanning</h2>
+<p><strong>Problem:</strong> dependencies, base images and manifests with known flaws reach production without
+anyone noticing.</p>
+<p><strong>Solution:</strong> three automatic layers, without relying on someone remembering to run them:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Tool</th>
+<th>Where it runs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code (dependencies, secrets, Dockerfile, k8s)</td>
+<td>Trivy</td>
+<td>every service's pipeline</td>
+</tr>
+<tr>
+<td>Final image</td>
+<td>Trivy</td>
+<td>every service's pipeline, before the push</td>
+</tr>
+<tr>
+<td>Running application</td>
+<td>OWASP ZAP baseline</td>
+<td><code>integration</code> workflow, through Nginx, like a user</td>
+</tr>
+</tbody>
+</table>
+<p>The pipeline <strong>fails</strong> on a CRITICAL vulnerability that has a fix or on a secret in the code; HIGH and
+MEDIUM go to GitHub's <em>Security</em> tab without blocking.</p>
+<p><strong>What the scan found and was fixed:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Finding</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Image with the full JDK</td>
+<td><code>eclipse-temurin:25-jre</code>: fewer packages, <strong>0 HIGH/CRITICAL</strong></td>
+</tr>
+<tr>
+<td>Container running as root</td>
+<td><code>USER 1001</code> in the Dockerfile</td>
+</tr>
+<tr>
+<td>Writable file system</td>
+<td><code>readOnlyRootFilesystem: true</code> + <code>emptyDir</code> on <code>/tmp</code></td>
+</tr>
+<tr>
+<td>Default <code>securityContext</code>, no seccomp</td>
+<td><code>runAsNonRoot</code>, <code>seccompProfile: RuntimeDefault</code>, <code>capabilities.drop: [ALL]</code></td>
+</tr>
+</tbody>
+</table>
+<p>After the fixes: 0 findings in the code and 0 HIGH/CRITICAL in the image.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.instant", "navigation.top", "navigation.sections", "navigation.indexes"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>
