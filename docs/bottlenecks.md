@@ -1,36 +1,36 @@
-# Meus bottlenecks
+# My bottlenecks
 
-Implementei três dos bottlenecks do projeto. Cada um tem a página completa (problema, solução,
-código, evidência) na documentação do grupo; aqui está o resumo com o número que mostra o efeito.
+I implemented three of the project's bottlenecks. Each one has a full page (problem, solution,
+code, evidence) in the group documentation; here is the summary with the number that shows the effect.
 
-| Bottleneck | Número que mostra o efeito | Página completa |
+| Bottleneck | Number that shows the effect | Full page |
 |---|---|---|
-| Balanceamento de carga | 15 requisições divididas 5/5/5 entre 3 réplicas, com a 3ª entrando sem reiniciar o Nginx | [Balanceamento](https://pna26.github.io/platform/bottlenecks/load-balancing/){target="_blank"} |
-| Cache do token (Redis) | 3.001 requisições autenticadas → **1** chamada ao Auth | [Cache](https://pna26.github.io/platform/bottlenecks/cache/){target="_blank"} |
-| Varredura de vulnerabilidades | imagem final com **0** HIGH/CRITICAL; o pipeline falha com CVE CRITICAL corrigível | [Varredura](https://pna26.github.io/platform/bottlenecks/vulnerability-scanning/){target="_blank"} |
+| Load balancing | 15 requests split 5/5/5 across 3 replicas, with the 3rd joining without restarting Nginx | [Load balancing](https://pna26.github.io/platform/bottlenecks/load-balancing/){target="_blank"} |
+| Token cache (Redis) | 3,001 authenticated requests → **1** call to Auth | [Cache](https://pna26.github.io/platform/bottlenecks/cache/){target="_blank"} |
+| Vulnerability scanning | final image with **0** HIGH/CRITICAL; the pipeline fails on a fixable CRITICAL CVE | [Scanning](https://pna26.github.io/platform/bottlenecks/vulnerability-scanning/){target="_blank"} |
 
-## Balanceamento de carga
+## Load balancing { #balanceamento-de-carga }
 
-**Problema:** com um único gateway, a plataforma inteira depende de um processo: se ele cai, nada
-responde; se satura, não há como crescer.
+**Problem:** with a single gateway, the whole platform depends on one process: if it goes down,
+nothing responds; if it saturates, there is no way to scale.
 
-**Solução:** um **Nginx** (`lb`) é o único serviço exposto e distribui as requisições entre várias
-réplicas do gateway (round robin). Além do hands-on 7:
+**Solution:** an **Nginx** (`lb`) is the only exposed service and distributes requests across several
+gateway replicas (round robin). Beyond hands-on 7:
 
-- `server gateway:8080 resolve` com o DNS do Docker re-resolvido a cada 10 s: `docker compose up
-  --scale gateway=N` coloca réplicas novas no balanceamento **sem** `nginx -s reload`;
-- no Kubernetes, `keepalive_time 10s`: o Service balanceia **conexões**, não requisições, e sem esse
-  limite as réplicas criadas pelo HPA levavam ≈ 1,5 min para receber carga (≈ 35–40 s com ele, no
-  ensaio do teste com HPA);
-- no Kubernetes, o gateway também é resolvido em tempo de execução (`resolver` do kube-dns +
-  `resolve`): no EKS o `lb` sobe antes do gateway e, sem isso, o Nginx caía com *host not found*
-  e travou o workflow `infra` em 16/11. Agora ele fica pronto, responde `502` até o gateway existir
-  e começa a encaminhar sozinho
-  ([evidência](https://pna26.github.io/platform/devops/ci-cd/#evidencia){target="_blank"});
-- `/gateway/actuator/**` bloqueado para fora: as métricas ficam só na rede interna.
+- `server gateway:8080 resolve` with Docker's DNS re-resolved every 10 s: `docker compose up
+  --scale gateway=N` adds new replicas to the load balancer **without** `nginx -s reload`;
+- on Kubernetes, `keepalive_time 10s`: the Service balances **connections**, not requests, and without
+  this limit the replicas created by the HPA took ≈ 1.5 min to receive load (≈ 35–40 s with it, in
+  the dry run of the HPA test);
+- on Kubernetes, the gateway is also resolved at runtime (kube-dns `resolver` +
+  `resolve`): on EKS the `lb` starts before the gateway and, without this, Nginx crashed with *host not found*
+  and blocked the `infra` workflow on 16/11. Now it becomes ready, responds `502` until the gateway exists
+  and starts forwarding on its own
+  ([evidence](https://pna26.github.io/platform/devops/ci-cd/#evidencia){target="_blank"});
+- `/gateway/actuator/**` blocked from the outside: metrics stay on the internal network only.
 
-**Evidência:** com 3 réplicas, 15 requisições pelo `lb` se dividem igualmente, e a terceira réplica
-entrou com o compose já rodando:
+**Evidence:** with 3 replicas, 15 requests through the `lb` are split evenly, and the third replica
+joined while compose was already running:
 
 ``` bash
 $ docker compose up -d --scale gateway=3 --no-recreate
@@ -40,64 +40,64 @@ $ for i in $(seq 1 15); do curl -s localhost:8080/health-check; echo; done | sor
    5 {"hostname":"c98aacd33a1e"}
 ```
 
-O mesmo teste roda no CI (`scripts/smoke-test.sh`) e falha se menos de duas réplicas responderem.
+The same test runs in CI (`scripts/smoke-test.sh`) and fails if fewer than two replicas respond.
 
-**No EKS:** em 20/11, 8 chamadas ao `/health-check` pelo ELB foram respondidas por **2 réplicas** do
-gateway (demonstração do vídeo). No teste com HPA de 19/11 o gateway foi de 2 para 6 réplicas sem
-nenhuma requisição HTTP com erro ([resultado](https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks){target="_blank"}).
+**On EKS:** on 20/11, 8 calls to `/health-check` through the ELB were answered by **2 gateway
+replicas** (video demo). In the HPA test of 19/11 the gateway went from 2 to 6 replicas with no failed
+HTTP request ([result](https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks){target="_blank"}).
 
-!!! warning "Ponto a melhorar: encerramento gracioso"
+!!! warning "To improve: graceful shutdown"
 
-    Na redução de 6 para 2 réplicas, 2 pods antigos do gateway terminaram em `Error` (`0/1`): o código
-    143 (SIGTERM) da JVM. Nenhuma requisição foi perdida porque a redução veio depois da carga, mas o
-    gateway não tem encerramento gracioso. Próximo passo: `server.shutdown: graceful`, um `preStop` com
-    `sleep 5` para o pod sair do Service antes do SIGTERM, e repetir a redução com o k6 rodando.
+    When scaling down from 6 to 2 replicas, 2 old gateway pods ended in `Error` (`0/1`): exit code 143
+    (SIGTERM) from the JVM. No request was lost because the scale-down came after the load, but the
+    gateway has no graceful shutdown. Next step: `server.shutdown: graceful`, a `preStop` with `sleep 5`
+    so the pod leaves the Service before SIGTERM, and repeating the scale-down with k6 running.
 
-## Cache do token (Redis)
+## Token cache (Redis) { #cache-do-token-redis }
 
-**Problema:** toda requisição autenticada fazia o gateway chamar o Auth para validar o token. Com
-várias réplicas do gateway, um cache local não seria compartilhado.
+**Problem:** every authenticated request made the gateway call Auth to validate the token. With
+several gateway replicas, a local cache would not be shared.
 
-**Solução:** o gateway guarda no **Redis** o resultado de `POST /auth/solve` (o id da conta):
+**Solution:** the gateway stores the result of `POST /auth/solve` (the account id) in **Redis**:
 
-- a chave é o **SHA-256 do token**, nunca o token em si;
-- o TTL nunca passa do `exp` do JWT: um token vencido não continua valendo pelo cache;
-- se o Redis cair, o gateway segue validando no Auth (só registra o erro), sem derrubar ninguém.
+- the key is the **SHA-256 of the token**, never the token itself;
+- the TTL never exceeds the JWT's `exp`: an expired token does not stay valid through the cache;
+- if Redis goes down, the gateway keeps validating against Auth (it only logs the error), without taking anything down.
 
-**Resultado** (`ab -n 3000 -c 20` numa rota protegida, 2 réplicas do gateway):
+**Result** (`ab -n 3000 -c 20` on a protected route, 2 gateway replicas):
 
-| Métrica | Valor |
+| Metric | Value |
 |---|---|
-| Requisições autenticadas | 3.001 |
-| Resolvidas pelo Redis (`hit`) | **3.000** |
-| Chamadas ao Auth (`miss`) | **1** |
+| Authenticated requests | 3,001 |
+| Served by Redis (`hit`) | **3,000** |
+| Calls to Auth (`miss`) | **1** |
 
-O Auth saiu do caminho de 99,97 % das requisições. Com o Redis parado, o gateway continuou
-respondendo `200` com token válido e `401` sem token.
+Auth was taken out of the path of 99.97 % of the requests. With Redis stopped, the gateway kept
+responding `200` with a valid token and `401` without a token.
 
-## Varredura de vulnerabilidades
+## Vulnerability scanning { #varredura-de-vulnerabilidades }
 
-**Problema:** dependências, imagens base e manifestos com falhas conhecidas chegam à produção sem
-ninguém ver.
+**Problem:** dependencies, base images and manifests with known flaws reach production without
+anyone noticing.
 
-**Solução:** três camadas automáticas, sem depender de alguém lembrar de rodar:
+**Solution:** three automatic layers, without relying on someone remembering to run them:
 
-| Camada | Ferramenta | Onde roda |
+| Layer | Tool | Where it runs |
 |---|---|---|
-| Código (dependências, segredos, Dockerfile, k8s) | Trivy | pipeline de todo serviço |
-| Imagem final | Trivy | pipeline de todo serviço, antes do push |
-| Aplicação rodando | OWASP ZAP baseline | workflow `integration`, pelo Nginx, como um usuário |
+| Code (dependencies, secrets, Dockerfile, k8s) | Trivy | every service's pipeline |
+| Final image | Trivy | every service's pipeline, before the push |
+| Running application | OWASP ZAP baseline | `integration` workflow, through Nginx, like a user |
 
-O pipeline **falha** com vulnerabilidade CRITICAL que tem correção ou com segredo no código; HIGH e
-MEDIUM vão para a aba *Security* do GitHub sem travar.
+The pipeline **fails** on a CRITICAL vulnerability that has a fix or on a secret in the code; HIGH and
+MEDIUM go to GitHub's *Security* tab without blocking.
 
-**O que a varredura achou e foi corrigido:**
+**What the scan found and was fixed:**
 
-| Achado | Correção |
+| Finding | Fix |
 |---|---|
-| Imagem com o JDK completo | `eclipse-temurin:25-jre`: menos pacotes, **0 HIGH/CRITICAL** |
-| Container rodando como root | `USER 1001` no Dockerfile |
-| Sistema de arquivos gravável | `readOnlyRootFilesystem: true` + `emptyDir` em `/tmp` |
-| `securityContext` padrão, sem seccomp | `runAsNonRoot`, `seccompProfile: RuntimeDefault`, `capabilities.drop: [ALL]` |
+| Image with the full JDK | `eclipse-temurin:25-jre`: fewer packages, **0 HIGH/CRITICAL** |
+| Container running as root | `USER 1001` in the Dockerfile |
+| Writable file system | `readOnlyRootFilesystem: true` + `emptyDir` on `/tmp` |
+| Default `securityContext`, no seccomp | `runAsNonRoot`, `seccompProfile: RuntimeDefault`, `capabilities.drop: [ALL]` |
 
-Depois das correções: 0 achados no código e 0 HIGH/CRITICAL na imagem.
+After the fixes: 0 findings in the code and 0 HIGH/CRITICAL in the image.

@@ -7,20 +7,20 @@ repo_name: souzxxx/platform-docs
 
 theme:
   name: material
-  language: pt-BR
+  language: en
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: grey
       toggle:
         icon: material/toggle-switch-off-outline
-        name: Modo escuro
+        name: Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: grey
       toggle:
         icon: material/toggle-switch
-        name: Modo claro
+        name: Light mode
   features:
     - content.code.copy
     - navigation.instant
@@ -55,32 +55,32 @@ plugins:
       reconfigure_material: false
       reconfigure_search: true
       languages:
-        - locale: pt
-          default: true
-          name: Português
-          build: true
         - locale: en
+          default: true
           name: English
           build: true
+        - locale: pt
+          name: Português
+          build: true
           nav_translations:
-            Início: Home
-            Projeto: Project
-            Meus bottlenecks: My bottlenecks
-            Uso de IA: Use of AI
+            Home: Início
+            Project: Projeto
+            My bottlenecks: Meus bottlenecks
+            Use of AI: Uso de IA
   - search
 
 nav:
-  - Início: index.md
-  - Projeto: projeto.md
-  - Meus bottlenecks: bottlenecks.md
+  - Home: index.md
+  - Project: projeto.md
+  - My bottlenecks: bottlenecks.md
   - Hands-on: hands-on.md
-  - Uso de IA: uso-de-ia.md
+  - Use of AI: uso-de-ia.md
 
 extra:
   alternate:
-    - name: Português
-      link: /platform-docs/
-      lang: pt
     - name: English
-      link: /platform-docs/en/
+      link: /platform-docs/
       lang: en
+    - name: Português
+      link: /platform-docs/pt/
+      lang: pt

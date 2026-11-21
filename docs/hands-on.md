@@ -1,24 +1,24 @@
 # Hands-on
 
-Os hands-on da disciplina foram aplicados **direto no projeto do grupo**, em vez de num repositório de
-estudos separado: cada um virou uma parte da plataforma. A tabela mostra onde cada hands-on está e quem
-fez essa parte.
+The course hands-on exercises were applied **directly to the group project**, instead of in a separate
+study repository: each one became a part of the platform. The table shows where each hands-on lives and who
+did that part.
 
-| Hands-on | Tema | Onde está no projeto | Quem |
+| Hands-on | Topic | Where it is in the project | Who |
 |---|---|---|---|
-| 0 | Ambiente, repositório raiz e MkDocs | [`pna26/platform`](https://github.com/pna26/platform){target="_blank"} com os serviços como submódulos em `api/` e a [documentação](https://pna26.github.io/platform/){target="_blank"} | **eu** |
+| 0 | Environment, root repository and MkDocs | [`pna26/platform`](https://github.com/pna26/platform){target="_blank"} with the services as submodules in `api/` and the [documentation](https://pna26.github.io/platform/){target="_blank"} | **me** |
 | 1 | Account (controller, repository, container) | [`account`](https://github.com/pna26/account){target="_blank"} + [`account-service`](https://github.com/pna26/account-service){target="_blank"} | Nicolas |
-| 2 | Gateway | [`gateway-service`](https://github.com/pna26/gateway-service){target="_blank"}: rotas e `GET /health-check` ([Projeto](projeto.md#gateway)) | **eu** |
-| 3 | Segurança (JWT, rotas abertas, autorização) | filtro de autorização do gateway ([Projeto](projeto.md#gateway)); emissão do JWT no `auth-service` | **eu** (gateway) e Nicolas (Auth) |
-| 4 | CI/CD (Jenkins) | feito com **GitHub Actions**, que o curso aceita no lugar do Jenkins: pipeline reutilizável ([Projeto](projeto.md#cicd)) | **eu** |
-| 5 | Kubernetes | manifestos do gateway e do `platform` (`lb`, Redis); cluster EKS | **eu** (manifestos) e Nicolas (EKS) |
-| 6 | Observabilidade (Prometheus + Grafana) | [Observabilidade](https://pna26.github.io/platform/bottlenecks/observability/){target="_blank"} | Gabriel |
-| 7 | Balanceamento de carga (Nginx) | [Balanceamento](bottlenecks.md#balanceamento-de-carga) | **eu** |
-| 8 | Cache distribuído (Redis) | [Cache do token](bottlenecks.md#cache-do-token-redis) | **eu** |
-| 9 | Replicação e failover do banco | não aplicado no projeto (no EKS o banco é o RDS, gerenciado pela AWS) | — |
-| 10 | Mensageria (Kafka) | [Mensageria](https://pna26.github.io/platform/bottlenecks/messaging/){target="_blank"} | Nicolas |
-| 11 | Rastreamento distribuído (traces) | não aplicado no projeto | — |
-| 12 | IA no CI/CD | não aplicado no projeto (a IA foi usada no desenvolvimento, ver [Uso de IA](uso-de-ia.md)) | — |
+| 2 | Gateway | [`gateway-service`](https://github.com/pna26/gateway-service){target="_blank"}: routes and `GET /health-check` ([Project](projeto.md#gateway)) | **me** |
+| 3 | Security (JWT, open routes, authorization) | gateway authorization filter ([Project](projeto.md#gateway)); JWT issuance in `auth-service` | **me** (gateway) and Nicolas (Auth) |
+| 4 | CI/CD (Jenkins) | done with **GitHub Actions**, which the course accepts in place of Jenkins: reusable pipeline ([Project](projeto.md#cicd)) | **me** |
+| 5 | Kubernetes | gateway and `platform` manifests (`lb`, Redis); EKS cluster | **me** (manifests) and Nicolas (EKS) |
+| 6 | Observability (Prometheus + Grafana) | [Observability](https://pna26.github.io/platform/bottlenecks/observability/){target="_blank"} | Gabriel |
+| 7 | Load balancing (Nginx) | [Load balancing](bottlenecks.md#balanceamento-de-carga) | **me** |
+| 8 | Distributed cache (Redis) | [Token cache](bottlenecks.md#cache-do-token-redis) | **me** |
+| 9 | Database replication and failover | not applied in the project (on EKS the database is RDS, managed by AWS) | — |
+| 10 | Messaging (Kafka) | [Messaging](https://pna26.github.io/platform/bottlenecks/messaging/){target="_blank"} | Nicolas |
+| 11 | Distributed tracing (traces) | not applied in the project | — |
+| 12 | AI in CI/CD | not applied in the project (AI was used during development, see [Use of AI](uso-de-ia.md)) | — |
 
-Além dos hands-on, o bottleneck de [varredura de vulnerabilidades](bottlenecks.md#varredura-de-vulnerabilidades)
-saiu da página de bottlenecks da disciplina (Trivy e OWASP ZAP).
+Beyond the hands-on exercises, the [vulnerability scanning](bottlenecks.md#varredura-de-vulnerabilidades) bottleneck
+came from the course's bottlenecks page (Trivy and OWASP ZAP).

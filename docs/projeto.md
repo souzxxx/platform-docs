@@ -1,103 +1,103 @@
-# Projeto
+# Project
 
-Uma plataforma de microsserviços para uma loja: o usuário se cadastra, faz login e consulta câmbio
-entre moedas. Todas as requisições entram por um único ponto (o **gateway**, atrás de um balanceador
-**Nginx**), que valida o token JWT e repassa a identidade do usuário para os serviços. Roda com Docker
-Compose na máquina e no **EKS** (Kubernetes da AWS), com deploy pelo **GitHub Actions**.
+A microservices platform for a store: the user signs up, logs in and checks exchange rates
+between currencies. Every request comes in through a single entry point (the **gateway**, behind an
+**Nginx** load balancer), which validates the JWT token and forwards the user's identity to the services. It runs with Docker
+Compose locally and on **EKS** (AWS Kubernetes), with deployment through **GitHub Actions**.
 
 ``` mermaid
 flowchart LR
     internet([Internet]) ==> lb["lb · Nginx"]
-    subgraph trusted [Camada confiável]
-        lb ==> gw["gateway<br/>(réplicas)"]
+    subgraph trusted [Trusted layer]
+        lb ==> gw["gateway<br/>(replicas)"]
         gw --> auth
         gw --> account
         gw --> exchange
         gw <-->|token → id| redis[(Redis)]
         auth --> account
         account --> db[(PostgreSQL)]
-        account -.->|evento| kafka[[Kafka]] -.-> notification
+        account -.->|event| kafka[[Kafka]] -.-> notification
     end
-    exchange --> api3([API de câmbio])
+    exchange --> api3([Exchange rate API])
 ```
 
-| Integrante | Responsabilidades |
+| Member | Responsibilities |
 |---|---|
-| **Leonardo** (eu) | Gateway, CI/CD, balanceamento de carga, cache (Redis), varredura de vulnerabilidades, documentação |
-| Nicolas | Auth, Account, AWS, EKS, mensageria (Kafka) |
-| Gabriel | Exchange, testes de carga, observabilidade, PaaS/custos/SLA |
+| **Leonardo** (me) | Gateway, CI/CD, load balancing, cache (Redis), vulnerability scanning, documentation |
+| Nicolas | Auth, Account, AWS, EKS, messaging (Kafka) |
+| Gabriel | Exchange, load testing, observability, PaaS/costs/SLA |
 
-Arquitetura completa: [Arquitetura](https://pna26.github.io/platform/arquitetura/){target="_blank"}.
+Full architecture: [Arquitetura](https://pna26.github.io/platform/arquitetura/){target="_blank"}.
 
-## Gateway
+## Gateway { #gateway }
 
-Repositório: [pna26/gateway-service](https://github.com/pna26/gateway-service){target="_blank"} ·
-Página do grupo: [Gateway](https://pna26.github.io/platform/servicos/gateway/){target="_blank"}
+Repository: [pna26/gateway-service](https://github.com/pna26/gateway-service){target="_blank"} ·
+Group page: [Gateway](https://pna26.github.io/platform/servicos/gateway/){target="_blank"}
 
-Feito com **Spring Cloud Gateway** sobre **WebFlux**, a partir dos hands-on 2 e 3. O gateway:
+Built with **Spring Cloud Gateway** on **WebFlux**, starting from hands-on 2 and 3. The gateway:
 
-1. **roteia** cada caminho para o serviço certo (`/auth/**`, `/accounts/**`, `/exchange/**`);
-2. **autoriza**: fora das rotas abertas (cadastro, login, logout), exige o cookie com o JWT, valida o
-   token no Auth (`POST /auth/solve`) e repassa o id da conta no header `id-account`;
-3. **descarta** qualquer `id-account` vindo do cliente, para ninguém se passar por outra conta;
-4. guarda no **Redis** o resultado da validação do token ([cache](bottlenecks.md#cache-do-token-redis));
-5. expõe `GET /health-check` com o hostname da réplica, que mostra o
-   [balanceamento](bottlenecks.md#balanceamento-de-carga) funcionando.
+1. **routes** each path to the right service (`/auth/**`, `/accounts/**`, `/exchange/**`);
+2. **authorizes**: outside the open routes (sign-up, login, logout), it requires the cookie with the JWT, validates the
+   token against Auth (`POST /auth/solve`) and forwards the account id in the `id-account` header;
+3. **discards** any `id-account` coming from the client, so no one can impersonate another account;
+4. stores the token validation result in **Redis** ([cache](bottlenecks.md#cache-do-token-redis));
+5. exposes `GET /health-check` with the replica's hostname, which shows
+   [load balancing](bottlenecks.md#balanceamento-de-carga) working.
 
-`mvn verify` roda 20 testes, também no CI a cada push: rotas abertas, cache do token (a chave é o
-SHA-256 do token e o TTL nunca passa do `exp`), filtro de autorização (sem cookie → `401`, Auth fora →
-`503`, cache hit não chama o Auth) e um teste que sobe o gateway de verdade contra um Auth e um Account
-falsos e confere que um `id-account` forjado é descartado.
+`mvn verify` runs 20 tests, also in CI on every push: open routes, token cache (the key is the
+SHA-256 of the token and the TTL never exceeds `exp`), authorization filter (no cookie → `401`, Auth down →
+`503`, a cache hit does not call Auth) and a test that starts the real gateway against a fake Auth and a fake
+Account and checks that a forged `id-account` is discarded.
 
-## CI/CD
+## CI/CD { #cicd }
 
-Página do grupo: [CI/CD](https://pna26.github.io/platform/devops/ci-cd/){target="_blank"}
+Group page: [CI/CD](https://pna26.github.io/platform/devops/ci-cd/){target="_blank"}
 
-Em vez de um pipeline por repositório, escrevi **um workflow reutilizável** no `platform`
-(`.github/workflows/service.yaml`) e cada serviço tem só um `ci.yaml` pequeno que o chama. Uma
-correção no pipeline vale para todos.
+Instead of one pipeline per repository, I wrote **one reusable workflow** in `platform`
+(`.github/workflows/service.yaml`) and each service has only a small `ci.yaml` that calls it. A
+fix in the pipeline applies to all of them.
 
 ``` mermaid
 flowchart LR
-    push(["push na main"]) --> build["build e testes<br/>(Maven ou pytest)"]
-    build --> trivy["Trivy<br/>código e imagem"]
-    trivy --> gate{"CRITICAL corrigível<br/>ou segredo?"}
-    gate -->|sim| fail([falha])
-    gate -->|não| img["imagem multi-arch<br/>GHCR + ECR"]
-    img --> deploy["deploy no EKS<br/>(kubectl apply + rollout)"]
+    push(["push to main"]) --> build["build and tests<br/>(Maven or pytest)"]
+    build --> trivy["Trivy<br/>code and image"]
+    trivy --> gate{"fixable CRITICAL<br/>or secret?"}
+    gate -->|yes| fail([fail])
+    gate -->|no| img["multi-arch image<br/>GHCR + ECR"]
+    img --> deploy["deploy to EKS<br/>(kubectl apply + rollout)"]
 ```
 
-- **Sem chave da AWS no GitHub:** o job entra na AWS por **OIDC**, assumindo uma role IAM só com o que
-  precisa (ECR e `eks:DescribeCluster`). Comprovado nos runs da `main`, com a imagem publicada no ECR
-  ([evidência](https://pna26.github.io/platform/devops/ci-cd/#evidencia){target="_blank"}).
-- **Compatível com quem ainda não tinha OIDC:** o reutilizável herda as permissões de quem chama; sem
-  `id-token: write`, o pipeline continua verde e publica só no GHCR.
-- O deploy no EKS liga sozinho quando a variável `EKS_CLUSTER` existe na organização (o cluster é
-  apagado fora dos testes para economizar). **Comprovado em 16/11:** com o cluster no ar, o mesmo
-  pipeline publicou e fez o deploy de account, auth e notification sem nenhum comando manual
-  (`kubectl apply` + `rollout status` verdes,
+- **No AWS key on GitHub:** the job signs in to AWS through **OIDC**, assuming an IAM role with only what it
+  needs (ECR and `eks:DescribeCluster`). Proven in the `main` runs, with the image published to ECR
+  ([evidence](https://pna26.github.io/platform/devops/ci-cd/#evidencia){target="_blank"}).
+- **Compatible with repositories that did not have OIDC yet:** the reusable workflow inherits the caller's permissions; without
+  `id-token: write`, the pipeline stays green and publishes to GHCR only.
+- Deployment to EKS turns on by itself when the `EKS_CLUSTER` variable exists in the organization (the cluster is
+  deleted outside of testing to save money). **Proven on 16/11:** with the cluster up, the same
+  pipeline published and deployed account, auth and notification without any manual command
+  (`kubectl apply` + `rollout status` green,
   [runs](https://pna26.github.io/platform/devops/ci-cd/#evidencia){target="_blank"}).
 
-O workflow `integration` do `platform` sobe a plataforma inteira com o compose em todo push e PR,
-roda o smoke test (que exige pelo menos duas réplicas do gateway respondendo) e o OWASP ZAP.
+The `integration` workflow in `platform` brings up the whole platform with compose on every push and PR,
+runs the smoke test (which requires at least two gateway replicas responding) and OWASP ZAP.
 
-## Repositório raiz e documentação
+## Root repository and documentation { #repositorio-raiz-e-documentacao }
 
-Criei a organização do trabalho e o repositório raiz como no hands-on 0:
+I set up the work organization and the root repository as in hands-on 0:
 
-- [`pna26/platform`](https://github.com/pna26/platform){target="_blank"} com os serviços como
-  **submódulos** em `api/`, o `compose.yaml`, o Nginx e os manifestos k8s compartilhados;
-- a documentação em **MkDocs Material**, publicada no GitHub Pages pelo workflow `docs`
-  (`mkdocs build --strict` em todo PR, então link quebrado não entra);
-- o [quadro do projeto](https://github.com/orgs/pna26/projects/1){target="_blank"} com as tarefas,
-  pesos e responsáveis, e o checklist da entrega.
+- [`pna26/platform`](https://github.com/pna26/platform){target="_blank"} with the services as
+  **submodules** in `api/`, the `compose.yaml`, Nginx and the shared k8s manifests;
+- the documentation in **MkDocs Material**, published to GitHub Pages by the `docs` workflow
+  (`mkdocs build --strict` on every PR, so broken links don't get in);
+- the [project board](https://github.com/orgs/pna26/projects/1){target="_blank"} with the tasks,
+  weights and owners, and the delivery checklist.
 
-## Status
+## Status { #status }
 
-| Item | Situação |
+| Item | Status |
 |---|---|
-| Gateway, CI/CD e os 3 bottlenecks | prontos e verificados no compose e no CI |
-| Manifestos k8s | rodaram num cluster kind igual ao EKS (ensaio do teste com HPA, 12/11) e no EKS (16/11) |
-| Deploy pelo CI no EKS | comprovado em 16/11 com account, auth e notification; em 20/11 o cluster subiu de novo com o deploy pelo CI e a plataforma respondeu pelo ELB (gateway com 2 réplicas, cadastro, login, 401 e RBAC na demonstração do vídeo) |
-| Workflow `infra` no EKS | falhou em 16/11 porque o `lb` não subia sem o gateway; corrigido com `resolve` no Nginx: em 20/11 o `lb` respondeu pelo ELB na frente do gateway |
-| Teste de carga com HPA no EKS | 19/11 (Gabriel): gateway de 2 → 6 réplicas, 0 % de requisições HTTP com erro, p95 254 ms ([resultado](https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks){target="_blank"}); ponto a melhorar no meu gateway: encerramento gracioso na redução de réplicas |
+| Gateway, CI/CD and the 3 bottlenecks | done and verified in compose and in CI |
+| k8s manifests | ran on a kind cluster matching EKS (dry run of the HPA test, 12/11) and on EKS (16/11) |
+| Deployment to EKS through CI | proven on 16/11 with account, auth and notification; on 20/11 the cluster came up again with the CI deployment and the platform answered through the ELB (gateway with 2 replicas, sign-up, login, 401 and RBAC in the video demo) |
+| `infra` workflow on EKS | failed on 16/11 because the `lb` would not start without the gateway; fixed with `resolve` in Nginx: on 20/11 the `lb` answered through the ELB in front of the gateway |
+| Load test with HPA on EKS | 19/11 (Gabriel): gateway from 2 → 6 replicas, 0 % failed HTTP requests, p95 254 ms ([result](https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks){target="_blank"}); improvement for my gateway: graceful shutdown when replicas are removed |
