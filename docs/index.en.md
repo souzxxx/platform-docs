@@ -18,7 +18,7 @@ The group's video, with no narration and with captions: architecture, CI/CD, the
 EKS, the bottlenecks, the load test with HPA and the costs. Script in
 [Apresentação](https://pna26.github.io/platform/apresentacao/){target="_blank"}.
 
-<!-- video-embed: <video controls preload="metadata" width="100%" src="../assets/apresentacao-pna26.mp4"></video> -->
+<video controls preload="metadata" width="100%" src="../assets/apresentacao-pna26.mp4"></video>
 
 ## What I did { #o-que-eu-fiz }
 
@@ -41,7 +41,7 @@ EKS, the bottlenecks, the load test with HPA and the costs. Script in
 | [pna26/auth-service](https://github.com/pna26/auth-service){target="_blank"} | Auth implementation (JWT) | Nicolas |
 | [pna26/account](https://github.com/pna26/account){target="_blank"} | Account interface (Feign) and DTOs | Nicolas |
 | [pna26/account-service](https://github.com/pna26/account-service){target="_blank"} | Account implementation (PostgreSQL + Flyway) | Nicolas |
-| [pna26/exchange-service](https://github.com/pna26/exchange-service){target="_blank"} | Currency exchange (Python/FastAPI) | Gabriel |
+| [pna26/exchange-service](https://github.com/pna26/exchange-service){target="_blank"} | Currency exchange (Python/FastAPI, Central Bank of Brazil PTAX) | Gabriel |
 | [pna26/notification-service](https://github.com/pna26/notification-service){target="_blank"} | Kafka consumer: welcome e-mail | Nicolas |
 | [souzxxx/platform-docs](https://github.com/souzxxx/platform-docs){target="_blank"} | This individual documentation | Leonardo |
 

@@ -98,5 +98,6 @@ I set up the work organization and the root repository as in hands-on 0:
 |---|---|
 | Gateway, CI/CD and the 3 bottlenecks | done and verified in compose and in CI |
 | k8s manifests | ran on a kind cluster matching EKS (dry run of the HPA test, 12/11) and on EKS (16/11) |
-| Deployment to EKS through CI | proven on 16/11 with account, auth and notification; the gateway and exchange go in on the next time the cluster is brought up |
-| `infra` workflow on EKS | failed on 16/11 because the `lb` would not start without the gateway; fixed (`resolve` in Nginx), still needs to run again on the cluster |
+| Deployment to EKS through CI | proven on 16/11 with account, auth and notification; on 20/11 the cluster came up again with the CI deployment and the platform answered through the ELB (gateway with 2 replicas, sign-up, login, 401 and RBAC in the video demo) |
+| `infra` workflow on EKS | failed on 16/11 because the `lb` would not start without the gateway; fixed with `resolve` in Nginx: on 20/11 the `lb` answered through the ELB in front of the gateway |
+| Load test with HPA on EKS | 19/11 (Gabriel): gateway from 2 → 6 replicas, 0 % failed HTTP requests, p95 254 ms ([result](https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks){target="_blank"}); improvement for my gateway: graceful shutdown when replicas are removed |

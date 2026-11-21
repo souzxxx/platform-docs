@@ -18,7 +18,7 @@ Vídeo do grupo, sem narração e com legendas: arquitetura, CI/CD, a plataforma
 bottlenecks, o teste de carga com HPA e os custos. Roteiro em
 [Apresentação](https://pna26.github.io/platform/apresentacao/){target="_blank"}.
 
-<!-- video-embed: <video controls preload="metadata" width="100%" src="assets/apresentacao-pna26.mp4"></video> -->
+<video controls preload="metadata" width="100%" src="assets/apresentacao-pna26.mp4"></video>
 
 ## O que eu fiz
 
@@ -41,7 +41,7 @@ bottlenecks, o teste de carga com HPA e os custos. Roteiro em
 | [pna26/auth-service](https://github.com/pna26/auth-service){target="_blank"} | Implementação do Auth (JWT) | Nicolas |
 | [pna26/account](https://github.com/pna26/account){target="_blank"} | Interface (Feign) e DTOs do Account | Nicolas |
 | [pna26/account-service](https://github.com/pna26/account-service){target="_blank"} | Implementação do Account (PostgreSQL + Flyway) | Nicolas |
-| [pna26/exchange-service](https://github.com/pna26/exchange-service){target="_blank"} | Câmbio (Python/FastAPI) | Gabriel |
+| [pna26/exchange-service](https://github.com/pna26/exchange-service){target="_blank"} | Câmbio (Python/FastAPI, PTAX do Banco Central) | Gabriel |
 | [pna26/notification-service](https://github.com/pna26/notification-service){target="_blank"} | Consumidor Kafka: e-mail de boas-vindas | Nicolas |
 | [souzxxx/platform-docs](https://github.com/souzxxx/platform-docs){target="_blank"} | Esta documentação individual | Leonardo |
 

@@ -42,6 +42,17 @@ $ for i in $(seq 1 15); do curl -s localhost:8080/health-check; echo; done | sor
 
 The same test runs in CI (`scripts/smoke-test.sh`) and fails if fewer than two replicas respond.
 
+**On EKS:** on 20/11, 8 calls to `/health-check` through the ELB were answered by **2 gateway
+replicas** (video demo). In the HPA test of 19/11 the gateway went from 2 to 6 replicas with no failed
+HTTP request ([result](https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks){target="_blank"}).
+
+!!! warning "To improve: graceful shutdown"
+
+    When scaling down from 6 to 2 replicas, 2 old gateway pods ended in `Error` (`0/1`): exit code 143
+    (SIGTERM) from the JVM. No request was lost because the scale-down came after the load, but the
+    gateway has no graceful shutdown. Next step: `server.shutdown: graceful`, a `preStop` with `sleep 5`
+    so the pod leaves the Service before SIGTERM, and repeating the scale-down with k6 running.
+
 ## Token cache (Redis) { #cache-do-token-redis }
 
 **Problem:** every authenticated request made the gateway call Auth to validate the token. With

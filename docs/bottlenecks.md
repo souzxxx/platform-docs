@@ -42,6 +42,17 @@ $ for i in $(seq 1 15); do curl -s localhost:8080/health-check; echo; done | sor
 
 O mesmo teste roda no CI (`scripts/smoke-test.sh`) e falha se menos de duas réplicas responderem.
 
+**No EKS:** em 20/11, 8 chamadas ao `/health-check` pelo ELB foram respondidas por **2 réplicas** do
+gateway (demonstração do vídeo). No teste com HPA de 19/11 o gateway foi de 2 para 6 réplicas sem
+nenhuma requisição HTTP com erro ([resultado](https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks){target="_blank"}).
+
+!!! warning "Ponto a melhorar: encerramento gracioso"
+
+    Na redução de 6 para 2 réplicas, 2 pods antigos do gateway terminaram em `Error` (`0/1`): o código
+    143 (SIGTERM) da JVM. Nenhuma requisição foi perdida porque a redução veio depois da carga, mas o
+    gateway não tem encerramento gracioso. Próximo passo: `server.shutdown: graceful`, um `preStop` com
+    `sleep 5` para o pod sair do Service antes do SIGTERM, e repetir a redução com o k6 rodando.
+
 ## Cache do token (Redis)
 
 **Problema:** toda requisição autenticada fazia o gateway chamar o Auth para validar o token. Com

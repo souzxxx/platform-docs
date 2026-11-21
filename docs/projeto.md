@@ -98,5 +98,6 @@ Criei a organização do trabalho e o repositório raiz como no hands-on 0:
 |---|---|
 | Gateway, CI/CD e os 3 bottlenecks | prontos e verificados no compose e no CI |
 | Manifestos k8s | rodaram num cluster kind igual ao EKS (ensaio do teste com HPA, 12/11) e no EKS (16/11) |
-| Deploy pelo CI no EKS | comprovado em 16/11 com account, auth e notification; o gateway e o exchange entram na próxima subida do cluster |
-| Workflow `infra` no EKS | falhou em 16/11 porque o `lb` não subia sem o gateway; corrigido (`resolve` no Nginx), falta rodar de novo no cluster |
+| Deploy pelo CI no EKS | comprovado em 16/11 com account, auth e notification; em 20/11 o cluster subiu de novo com o deploy pelo CI e a plataforma respondeu pelo ELB (gateway com 2 réplicas, cadastro, login, 401 e RBAC na demonstração do vídeo) |
+| Workflow `infra` no EKS | falhou em 16/11 porque o `lb` não subia sem o gateway; corrigido com `resolve` no Nginx: em 20/11 o `lb` respondeu pelo ELB na frente do gateway |
+| Teste de carga com HPA no EKS | 19/11 (Gabriel): gateway de 2 → 6 réplicas, 0 % de requisições HTTP com erro, p95 254 ms ([resultado](https://pna26.github.io/platform/devops/load-testing/#resultado-no-eks){target="_blank"}); ponto a melhorar no meu gateway: encerramento gracioso na redução de réplicas |
