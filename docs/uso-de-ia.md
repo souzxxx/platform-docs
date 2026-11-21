@@ -19,6 +19,7 @@ plataforma localmente, e abriu os PRs. Eu revisei, decidi o que entrava e confer
 | Varredura de vulnerabilidades | Sim | as correções vieram dos próprios achados do Trivy |
 | Revisão dos PRs dos colegas | Sim, leitura dos diffs com a IA | a decisão de mergear e os comentários são meus |
 | Documentação (esta e as minhas páginas do grupo) | Sim | baseada no template do professor; `mkdocs build --strict` |
+| Vídeo de apresentação e tradução para o inglês | Sim: roteiro, gravação das páginas (Playwright), montagem (ffmpeg) e tradução | cada cena conferida por quadros extraídos do vídeo; a demonstração no EKS esconde o JWT e a senha; a versão em inglês mantém as âncoras das páginas em português |
 
 **O que eu fiz sem IA:**
 

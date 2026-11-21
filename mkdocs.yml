@@ -48,6 +48,25 @@ markdown_extensions:
       alternate_style: true
 
 plugins:
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      # seletor de idioma em extra.alternate (o automático não funciona com navigation.instant)
+      reconfigure_material: false
+      reconfigure_search: true
+      languages:
+        - locale: pt
+          default: true
+          name: Português
+          build: true
+        - locale: en
+          name: English
+          build: true
+          nav_translations:
+            Início: Home
+            Projeto: Project
+            Meus bottlenecks: My bottlenecks
+            Uso de IA: Use of AI
   - search
 
 nav:
@@ -56,3 +75,12 @@ nav:
   - Meus bottlenecks: bottlenecks.md
   - Hands-on: hands-on.md
   - Uso de IA: uso-de-ia.md
+
+extra:
+  alternate:
+    - name: Português
+      link: /platform-docs/
+      lang: pt
+    - name: English
+      link: /platform-docs/en/
+      lang: en
