@@ -14,13 +14,11 @@ implementei e os links de tudo o que foi usado.
 
 ## Vídeo de apresentação (1–2 min)
 
-!!! warning "Em gravação"
+Vídeo do grupo, sem narração e com legendas: arquitetura, CI/CD, a plataforma rodando no EKS, os
+bottlenecks, o teste de carga com HPA e os custos. Roteiro em
+[Apresentação](https://pna26.github.io/platform/apresentacao/){target="_blank"}.
 
-    O vídeo do grupo é gravado com a plataforma no EKS (roteiro em
-    [Apresentação](https://pna26.github.io/platform/apresentacao/){target="_blank"}) e entra aqui
-    assim que estiver pronto.
-
-<!-- vídeo: <iframe width="100%" height="470" src="https://www.youtube.com/embed/<id>" allowfullscreen></iframe> -->
+<!-- video-embed: <video controls preload="metadata" width="100%" src="assets/apresentacao-pna26.mp4"></video> -->
 
 ## O que eu fiz
 
